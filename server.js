@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const { getAllClients, getClientById, addClient, deleteClient } = require('./handlers/clientHandlers');
+const { getWordObj, getWord, evalGuess } = require('./handlers/hangmanHandlers');
 const { response } = require('express');
 
 express()
@@ -70,6 +71,41 @@ express()
       res.status(200).json({ status: 200, message: response.data });
     } else {
       res.status(200).json({ status: 200, message: response.data });
+    }
+  })
+
+  // Exercise 3 endpoints
+
+  // Testing
+  .get('/hangman/word/:id', (req, res) => {
+    const response = getWordObj(req.params.id);
+  
+    if (response.status === 'ok') {
+      res.status(200).json({ status: 200, wordObj: response.data});
+    } else {
+      res.status(200).json({ status: 200, message: response.data});
+    }
+  })
+
+  // Get word
+  .get('/hangman/word', (req, res) => {
+    const response = getWord();
+  
+    if (response.status === 'ok') {
+      res.status(200).json({ status: 200, id: response.word, letterCount: response.letterCount} );
+    } else {
+      res.status(200).json({ status: 200, message: response.data});
+    }
+  })
+
+  // Evaluate guess
+  .get('/hangman/guess/:id/:letter', (req, res) => {
+    const response = evalGuess(req.params.id, req.params.letter);
+  
+    if (response.status === 'ok') {
+      res.status(200).json({ status: 200, guessResult: response.data});
+    } else {
+      res.status(200).json({ status: 200, message: response.data});
     }
   })
 
